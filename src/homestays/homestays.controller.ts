@@ -22,19 +22,19 @@ import { UpdateHomestayDto } from './dtos/update-homestay.dto';
 @Controller('homestays')
 @ApiTags('Homestays')
 export class HomestaysController {
-  constructor(private readonly usersService: HomestaysService) {}
+  constructor(private readonly homestaysService: HomestaysService) {}
 
   @Get()
   @ApiOkResponse({ status: 200, type: HomestayEntity, isArray: true })
   async getAllUsers() {
-    return this.usersService.getAllHomestays();
+    return this.homestaysService.getAllHomestays();
   }
 
   @Get(':id')
   @ApiOkResponse({ status: 200, type: HomestayEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   async getUser(@Param('id') id: string) {
-    return this.usersService.getHomestay(id);
+    return this.homestaysService.getHomestay(id);
   }
 
   @Post()
@@ -46,7 +46,7 @@ export class HomestaysController {
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   async createUser(@Body() createHomestayDto: CreateHomestayDto) {
-    return this.usersService.createHomestay(createHomestayDto);
+    return this.homestaysService.createHomestay(createHomestayDto);
   }
 
   @Patch(':id')
@@ -57,13 +57,13 @@ export class HomestaysController {
     @Param('id') id: string,
     updateHomestayDto: UpdateHomestayDto,
   ) {
-    return this.usersService.updateHomestay(id, updateHomestayDto);
+    return this.homestaysService.updateHomestay(id, updateHomestayDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ status: 204, description: 'Deleted Successfully' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   async removeUser(@Param('id') id: string) {
-    return this.usersService.deleteHomestay(id);
+    return this.homestaysService.deleteHomestay(id);
   }
 }
