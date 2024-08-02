@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -13,6 +14,9 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
   ApiCreatedResponse,
+  ApiQuery,
+  ApiOperation,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { HomestaysService } from './homestays.service';
 import { HomestayEntity } from './entities/homestay.entity';
@@ -26,15 +30,52 @@ export class HomestaysController {
 
   @Get()
   @ApiOkResponse({ status: 200, type: HomestayEntity, isArray: true })
-  async getAllUsers() {
+  async getAll() {
     return this.homestaysService.getAllHomestays();
   }
 
   @Get(':id')
   @ApiOkResponse({ status: 200, type: HomestayEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async getUser(@Param('id') id: string) {
+  async get(@Param('id') id: string) {
     return this.homestaysService.getHomestay(id);
+  }
+
+  @Get('nearby')
+  @ApiOperation({ summary: 'Get nearby homestays' })
+  @ApiQuery({
+    name: 'longitude',
+    description: 'The longitude of the location',
+    required: true,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'latitude',
+    description: 'The latitude of the location',
+    required: true,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'radius',
+    description: 'The search radius in kilometers',
+    required: true,
+    type: Number,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of nearby homestays',
+    type: [HomestayEntity],
+  })
+  async getNearByHomestays(
+    @Query('longitude') longitude: number,
+    @Query('latitude') latitude: number,
+    @Query('radius') radius: number,
+  ) {
+    return this.homestaysService.findNearByHomestays(
+      longitude,
+      latitude,
+      radius,
+    );
   }
 
   @Post()
@@ -45,7 +86,7 @@ export class HomestaysController {
     description: 'Created Successfully',
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async createUser(@Body() createHomestayDto: CreateHomestayDto) {
+  async create(@Body() createHomestayDto: CreateHomestayDto) {
     return this.homestaysService.createHomestay(createHomestayDto);
   }
 
@@ -53,9 +94,9 @@ export class HomestaysController {
   @ApiOkResponse({ status: 201, type: HomestayEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async updateUser(
+  async update(
     @Param('id') id: string,
-    updateHomestayDto: UpdateHomestayDto,
+    @Body() updateHomestayDto: UpdateHomestayDto,
   ) {
     return this.homestaysService.updateHomestay(id, updateHomestayDto);
   }
@@ -63,7 +104,7 @@ export class HomestaysController {
   @Delete(':id')
   @ApiOkResponse({ status: 204, description: 'Deleted Successfully' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async removeUser(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.homestaysService.deleteHomestay(id);
   }
 }

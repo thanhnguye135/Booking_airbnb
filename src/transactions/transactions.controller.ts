@@ -26,14 +26,14 @@ export class TransactionsController {
 
   @Get()
   @ApiOkResponse({ status: 200, type: TransactionEntity, isArray: true })
-  async getAllUsers() {
+  async getAll() {
     return this.transactionsService.getAllTransactions();
   }
 
   @Get(':id')
   @ApiOkResponse({ status: 200, type: TransactionEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async getUser(@Param('id') id: string) {
+  async get(@Param('id') id: string) {
     return this.transactionsService.getTransaction(id);
   }
 
@@ -45,7 +45,7 @@ export class TransactionsController {
     description: 'Created Successfully',
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async createUser(@Body() createTransactionDto: CreateTransactionDto) {
+  async create(@Body() createTransactionDto: CreateTransactionDto) {
     return this.transactionsService.createTransaction(createTransactionDto);
   }
 
@@ -53,7 +53,7 @@ export class TransactionsController {
   @ApiOkResponse({ status: 201, type: TransactionEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async updateUser(
+  async update(
     @Param('id') id: string,
     updateTransactionDto: UpdateTransactionDto,
   ) {
@@ -63,7 +63,7 @@ export class TransactionsController {
   @Delete(':id')
   @ApiOkResponse({ status: 204, description: 'Deleted Successfully' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async removeUser(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.transactionsService.deleteTransaction(id);
   }
 }

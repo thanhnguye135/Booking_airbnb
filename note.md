@@ -17,3 +17,8 @@
     **Generate modules for User, Booking, Homestay, HomeAvailable, Payment, Transaction
     **Create Prisma Service === Global
     **Implement CRUD
+
+#Implement features
+
+    **Fix docker use Postgis to search homestay
+    **Implement search function with coordinates

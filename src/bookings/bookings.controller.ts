@@ -26,14 +26,14 @@ export class BookingsController {
 
   @Get()
   @ApiOkResponse({ status: 200, type: BookingEntity, isArray: true })
-  async getAllUsers() {
+  async getAll() {
     return this.bookingsService.getAllBookings();
   }
 
   @Get(':id')
   @ApiOkResponse({ status: 200, type: BookingEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async getUser(@Param('id') id: string) {
+  async get(@Param('id') id: string) {
     return this.bookingsService.getBooking(id);
   }
 
@@ -45,7 +45,7 @@ export class BookingsController {
     description: 'Created Successfully',
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async createUser(@Body() createBookingDto: CreateBookingDto) {
+  async create(@Body() createBookingDto: CreateBookingDto) {
     return this.bookingsService.createBooking(createBookingDto);
   }
 
@@ -53,17 +53,14 @@ export class BookingsController {
   @ApiOkResponse({ status: 201, type: BookingEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async updateUser(
-    @Param('id') id: string,
-    updateBookingDto: UpdateBookingDto,
-  ) {
+  async update(@Param('id') id: string, updateBookingDto: UpdateBookingDto) {
     return this.bookingsService.updateBooking(id, updateBookingDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ status: 204, description: 'Deleted Successfully' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async removeUser(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.bookingsService.deleteBooking(id);
   }
 }

@@ -26,14 +26,14 @@ export class HomeAvailablesController {
 
   @Get()
   @ApiOkResponse({ status: 200, type: HomeAvailableEntity, isArray: true })
-  async getAllUsers() {
+  async getAll() {
     return this.homeAvailablesService.getAllHomeAvailables();
   }
 
   @Get(':id')
   @ApiOkResponse({ status: 200, type: HomeAvailableEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async getUser(@Param('id') id: string) {
+  async get(@Param('id') id: string) {
     return this.homeAvailablesService.getHomeAvailable(id);
   }
 
@@ -45,7 +45,7 @@ export class HomeAvailablesController {
     description: 'Created Successfully',
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async createUser(@Body() createHomeAvailableDto: CreateHomeAvailableDto) {
+  async create(@Body() createHomeAvailableDto: CreateHomeAvailableDto) {
     return this.homeAvailablesService.createHomeAvailable(
       createHomeAvailableDto,
     );
@@ -55,7 +55,7 @@ export class HomeAvailablesController {
   @ApiOkResponse({ status: 201, type: HomeAvailableEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async updateUser(
+  async update(
     @Param('id') id: string,
     updateHomeAvailableDto: UpdateHomeAvailableDto,
   ) {
@@ -68,7 +68,7 @@ export class HomeAvailablesController {
   @Delete(':id')
   @ApiOkResponse({ status: 204, description: 'Deleted Successfully' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async removeUser(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.homeAvailablesService.deleteHomeAvailable(id);
   }
 }

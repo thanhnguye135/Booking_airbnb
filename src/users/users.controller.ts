@@ -26,14 +26,14 @@ export class UsersController {
 
   @Get()
   @ApiOkResponse({ status: 200, type: UserEntity, isArray: true })
-  async getAllUsers() {
+  async getAll() {
     return this.usersService.getAllUsers();
   }
 
   @Get(':id')
   @ApiOkResponse({ status: 200, type: UserEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async getUser(@Param('id') id: string) {
+  async get(@Param('id') id: string) {
     return this.usersService.getUser(id);
   }
 
@@ -45,7 +45,7 @@ export class UsersController {
     description: 'Created Successfully',
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async createUser(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }
 
@@ -53,14 +53,14 @@ export class UsersController {
   @ApiOkResponse({ status: 201, type: UserEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async updateUser(@Param('id') id: string, updateUserDto: UpdateUserDto) {
+  async update(@Param('id') id: string, updateUserDto: UpdateUserDto) {
     return this.usersService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ status: 204, description: 'Deleted Successfully' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  async removeUser(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.usersService.deleteUser(id);
   }
 }

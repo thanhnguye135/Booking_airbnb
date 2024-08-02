@@ -25,4 +25,8 @@ export class HomestayEntity implements Homestay {
 
   @ApiProperty()
   updatedAt: Date;
+
+  constructor(data: Partial<HomestayEntity>) {
+    Object.assign(this, data);
+  }
 }
