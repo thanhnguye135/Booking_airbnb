@@ -1027,6 +1027,13 @@
   dependencies:
     undici-types "~6.11.1"
 
+"@types/node@>=8.1.0":
+  version "22.1.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.1.0.tgz#6d6adc648b5e03f0e83c78dc788c2b037d0ad94b"
+  integrity sha512-AOmuRF0R2/5j1knA3c6G3HOk523Ga+l+ZXltX8SF1+5oqcXijjfTd8fY3XRZqSihEu9XhtQnKYLmkFaoxgsJHw==
+  dependencies:
+    undici-types "~6.13.0"
+
 "@types/node@^20.3.1":
   version "20.14.13"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-20.14.13.tgz#bf4fe8959ae1c43bc284de78bd6c01730933736b"
@@ -4624,6 +4631,14 @@ strip-json-comments@^3.1.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
 
+stripe@^16.6.0:
+  version "16.6.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-16.6.0.tgz#d0346052ed88f9241f137b82ba13af76685582a4"
+  integrity sha512-6hWEt6n7InVyP4p2MfMpyl1GwKRJA2w4VAwxJUbXA9xhT7ToWOdrTXqTz2EnyJkw4PMM03twi3eOWQAXN/+uEg==
+  dependencies:
+    "@types/node" ">=8.1.0"
+    qs "^6.11.0"
+
 superagent@^8.1.2:
   version "8.1.2"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-8.1.2.tgz#03cb7da3ec8b32472c9d20f6c2a57c7f3765f30b"
@@ -4910,6 +4925,11 @@ undici-types@~6.11.1:
   version "6.11.1"
   resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.11.1.tgz#432ea6e8efd54a48569705a699e62d8f4981b197"
   integrity sha512-mIDEX2ek50x0OlRgxryxsenE5XaQD4on5U2inY7RApK3SOJpofyw7uW2AyfMKkhAxXIceo2DeWGVGwyvng1GNQ==
+
+undici-types@~6.13.0:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.13.0.tgz#e3e79220ab8c81ed1496b5812471afd7cf075ea5"
+  integrity sha512-xtFJHudx8S2DSoujjMd1WeWvn7KKWFRESZTMeL1RptAYERu29D6jphMjjY+vn96jvN3kVPDNxU/E13VTaXj6jg==
 
 universalify@^2.0.0:
   version "2.0.1"

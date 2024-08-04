@@ -9,9 +9,11 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { HomeAvailablesModule } from './home-availables/home-availables.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
+    StripeModule.forRootAsync(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -23,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
     TransactionsModule,
     HomeAvailablesModule,
     PrismaModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
