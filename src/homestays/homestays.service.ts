@@ -53,7 +53,7 @@ export class HomestaysService {
         gen_random_uuid(), 
         ${name}, 
         ${description}, 
-        ST_SetSRID(ST_Point(${longitude}, ${latitude}), 32632),
+        ST_SetSRID(ST_Point(${longitude}, ${latitude}), 4326),
         ${pricePerNight},
         NOW(),
         NOW()
@@ -100,7 +100,7 @@ export class HomestaysService {
     const homestays = await this.prisma.$queryRaw<HomestayRaw[]>`
       SELECT id, name, description, ST_X(coordinates) AS longitude, ST_Y(coordinates) AS latitude, "pricePerNight", "createdAt", "updatedAt"
       FROM public."Homestay"
-      WHERE ST_DWithin(coordinates, ST_SetSRID(ST_Point(${longitude}, ${latitude}), 32632), ${radius})
+      WHERE ST_DWithin(coordinates, ST_SetSRID(ST_Point(${longitude}, ${latitude}), 4326), ${radius})
     `;
 
     return homestays.map(
