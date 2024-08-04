@@ -34,6 +34,7 @@ export class HomestaysService {
       FROM public."Homestay"
       WHERE id = ${id}
     `;
+
     return new HomestayEntity(homestay[0]);
   }
 
@@ -52,7 +53,7 @@ export class HomestaysService {
         gen_random_uuid(), 
         ${name}, 
         ${description}, 
-        ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326),
+        ST_SetSRID(ST_Point(${longitude}, ${latitude}), 32632),
         ${pricePerNight},
         NOW(),
         NOW()
@@ -97,19 +98,24 @@ export class HomestaysService {
     radius: number,
   ) {
     const homestays = await this.prisma.$queryRaw<HomestayRaw[]>`
-      SELECT id, name, description, ST_X(coordinates) AS longitude, ST_Y(coordinates) AS latitude, "pricePerNight", "createdAt", "updatedAt",
-             ST_Distance(
-               ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326)::geography,
-               ST_SetSRID(coordinates, 4326)::geography
-             ) AS distance
+      SELECT id, name, description, ST_X(coordinates) AS longitude, ST_Y(coordinates) AS latitude, "pricePerNight", "createdAt", "updatedAt"
       FROM public."Homestay"
-      WHERE ST_Distance(
-        ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326)::geography,
-        ST_SetSRID(coordinates, 4326)::geography
-      ) < ${radius}
+      WHERE ST_DWithin(coordinates, ST_SetSRID(ST_Point(${longitude}, ${latitude}), 32632), ${radius})
     `;
 
-    return homestays.map((homestay) => new HomestayEntity(homestay));
+    return homestays.map(
+      (homestay) =>
+        new HomestayEntity({
+          id: homestay.id,
+          name: homestay.name,
+          description: homestay.description,
+          latitude: homestay.latitude,
+          longitude: homestay.longitude,
+          pricePerNight: homestay.pricePerNight,
+          createdAt: homestay.createdAt,
+          updatedAt: homestay.updatedAt,
+        }),
+    );
   }
 }
 

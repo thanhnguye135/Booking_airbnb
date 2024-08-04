@@ -34,13 +34,6 @@ export class HomestaysController {
     return this.homestaysService.getAllHomestays();
   }
 
-  @Get(':id')
-  @ApiOkResponse({ status: 200, type: HomestayEntity, isArray: false })
-  @ApiNotFoundResponse({ description: 'Not Found' })
-  async get(@Param('id') id: string) {
-    return this.homestaysService.getHomestay(id);
-  }
-
   @Get('nearby')
   @ApiOperation({ summary: 'Get nearby homestays' })
   @ApiQuery({
@@ -67,15 +60,22 @@ export class HomestaysController {
     type: [HomestayEntity],
   })
   async getNearByHomestays(
-    @Query('longitude') longitude: number,
-    @Query('latitude') latitude: number,
-    @Query('radius') radius: number,
+    @Query('longitude') longitude: string,
+    @Query('latitude') latitude: string,
+    @Query('radius') radius: string,
   ) {
     return this.homestaysService.findNearByHomestays(
-      longitude,
-      latitude,
-      radius,
+      +longitude,
+      +latitude,
+      +radius,
     );
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ status: 200, type: HomestayEntity, isArray: false })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  async get(@Param('id') id: string) {
+    return this.homestaysService.getHomestay(id);
   }
 
   @Post()

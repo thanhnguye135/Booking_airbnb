@@ -35,7 +35,7 @@ model Homestay {
   id String @id @default(uuid())
   name String
   description String?
-  coordinates Unsupported("geometry(Point, 4326)")
+  coordinates Unsupported("geometry(Point, 32632)")
   pricePerNight Float
 
   bookings Booking[]

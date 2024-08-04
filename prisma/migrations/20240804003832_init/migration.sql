@@ -21,7 +21,7 @@ CREATE TABLE "Homestay" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "coordinates" geometry(Point, 4326) NOT NULL,
+    "coordinates" geometry(Point, 32632) NOT NULL,
     "pricePerNight" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
