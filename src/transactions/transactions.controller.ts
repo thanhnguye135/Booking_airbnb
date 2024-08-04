@@ -55,7 +55,7 @@ export class TransactionsController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   async update(
     @Param('id') id: string,
-    updateTransactionDto: UpdateTransactionDto,
+    @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
     return this.transactionsService.updateTransaction(id, updateTransactionDto);
   }

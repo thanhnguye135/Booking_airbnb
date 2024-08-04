@@ -53,7 +53,10 @@ export class BookingsController {
   @ApiOkResponse({ status: 201, type: BookingEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async update(@Param('id') id: string, updateBookingDto: UpdateBookingDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateBookingDto: UpdateBookingDto,
+  ) {
     return this.bookingsService.updateBooking(id, updateBookingDto);
   }
 

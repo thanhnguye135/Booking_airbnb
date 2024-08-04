@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -13,6 +14,7 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { HomeAvailableEntity } from './entities/home-available.entity';
 import { CreateHomeAvailableDto } from './dtos/create-home-available.dto';
@@ -28,6 +30,19 @@ export class HomeAvailablesController {
   @ApiOkResponse({ status: 200, type: HomeAvailableEntity, isArray: true })
   async getAll() {
     return this.homeAvailablesService.getAllHomeAvailables();
+  }
+
+  @Get('home-available')
+  @ApiQuery({ name: 'startDate', type: Date, example: '2024-08-04T00:00:00Z' })
+  @ApiQuery({ name: 'endDate', type: Date, example: '2024-08-05T00:00:00Z' })
+  async getHomeAvailables(
+    @Query('startDate') startDate: Date,
+    @Query('endDate') endDate: Date,
+  ) {
+    return await this.homeAvailablesService.getAvailableHomes(
+      startDate,
+      endDate,
+    );
   }
 
   @Get(':id')
@@ -57,7 +72,7 @@ export class HomeAvailablesController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   async update(
     @Param('id') id: string,
-    updateHomeAvailableDto: UpdateHomeAvailableDto,
+    @Body() updateHomeAvailableDto: UpdateHomeAvailableDto,
   ) {
     return this.homeAvailablesService.updateHomeAvailable(
       id,

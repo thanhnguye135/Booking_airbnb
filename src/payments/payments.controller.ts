@@ -53,7 +53,10 @@ export class PaymentsController {
   @ApiOkResponse({ status: 201, type: PaymentEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async update(@Param('id') id: string, updatePaymentDto: UpdatePaymentDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updatePaymentDto: UpdatePaymentDto,
+  ) {
     return this.paymentsService.updatePayment(id, updatePaymentDto);
   }
 

@@ -53,7 +53,7 @@ export class UsersController {
   @ApiOkResponse({ status: 201, type: UserEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async update(@Param('id') id: string, updateUserDto: UpdateUserDto) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.updateUser(id, updateUserDto);
   }
 

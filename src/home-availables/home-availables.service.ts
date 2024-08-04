@@ -34,4 +34,22 @@ export class HomeAvailablesService {
   async deleteHomeAvailable(id: string) {
     return await this.prisma.homeAvailable.delete({ where: { id } });
   }
+
+  async getAvailableHomes(startDate: Date, endDate: Date) {
+    const availableHomes = await this.prisma.homeAvailable.findMany({
+      where: {
+        AND: [
+          {
+            availableFrom: { lt: endDate },
+          },
+          {
+            availableTo: { gt: startDate },
+          },
+        ],
+      },
+      include: { homestay: true },
+    });
+
+    return availableHomes;
+  }
 }
