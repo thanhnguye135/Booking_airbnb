@@ -10,6 +10,8 @@ import { HomeAvailablesModule } from './home-availables/home-availables.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { StripeModule } from './stripe/stripe.module';
+import { AuthModule } from './auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { StripeModule } from './stripe/stripe.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    PassportModule.register({ session: true }),
     UsersModule,
     HomestaysModule,
     BookingsModule,
@@ -26,6 +29,7 @@ import { StripeModule } from './stripe/stripe.module';
     HomeAvailablesModule,
     PrismaModule,
     StripeModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -22,3 +22,6 @@
 
     **Fix docker use Postgis to search homestay
     **Implement search function with coordinates
+    **Implement search available homestay with date
+    **Implement payment method via Stripe
+    **Implement authentication SSO with Google
