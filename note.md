@@ -25,3 +25,8 @@
     **Implement search available homestay with date
     **Implement payment method via Stripe
     **Implement authentication SSO with Google
+
+#Non-functional
+
+    **Implement caching via Redis
+    **Implement message queue via RabbitMQ

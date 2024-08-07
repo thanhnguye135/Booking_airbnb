@@ -18,6 +18,7 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('users')
 @ApiTags('Users')
@@ -25,12 +26,16 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @CacheKey('all-users')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: UserEntity, isArray: true })
   async getAll() {
     return this.usersService.getAllUsers();
   }
 
   @Get(':id')
+  @CacheKey('one-user')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: UserEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   async get(@Param('id') id: string) {

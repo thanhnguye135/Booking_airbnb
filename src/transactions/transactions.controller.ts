@@ -18,6 +18,7 @@ import { TransactionsService } from './transactions.service';
 import { TransactionEntity } from './entities/transaction.entity';
 import { CreateTransactionDto } from './dtos/create-transaction.dto';
 import { UpdateTransactionDto } from './dtos/update-transaction.dto';
+import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('transactions')
 @ApiTags('Transactions')
@@ -25,12 +26,16 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Get()
+  @CacheKey('all-transactions')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: TransactionEntity, isArray: true })
   async getAll() {
     return this.transactionsService.getAllTransactions();
   }
 
   @Get(':id')
+  @CacheKey('one-transaction')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: TransactionEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   async get(@Param('id') id: string) {

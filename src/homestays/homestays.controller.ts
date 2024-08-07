@@ -22,6 +22,7 @@ import { HomestaysService } from './homestays.service';
 import { HomestayEntity } from './entities/homestay.entity';
 import { CreateHomestayDto } from './dtos/create-homestay.dto';
 import { UpdateHomestayDto } from './dtos/update-homestay.dto';
+import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('homestays')
 @ApiTags('Homestays')
@@ -29,12 +30,16 @@ export class HomestaysController {
   constructor(private readonly homestaysService: HomestaysService) {}
 
   @Get()
+  @CacheKey('all-homestays')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: HomestayEntity, isArray: true })
   async getAll() {
     return this.homestaysService.getAllHomestays();
   }
 
   @Get('nearby')
+  @CacheKey('homestays-filter-with-radius')
+  @CacheTTL(60 * 1000)
   @ApiOperation({ summary: 'Get nearby homestays' })
   @ApiQuery({
     name: 'longitude',
@@ -72,6 +77,8 @@ export class HomestaysController {
   }
 
   @Get(':id')
+  @CacheKey('one-homestay')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: HomestayEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   async get(@Param('id') id: string) {

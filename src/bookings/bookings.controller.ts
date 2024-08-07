@@ -18,6 +18,7 @@ import { BookingEntity } from './entities/booking.entity';
 import { CreateBookingDto } from './dtos/create-booking.dto';
 import { UpdateBookingDto } from './dtos/update-booking.dto';
 import { BookingsService } from './bookings.service';
+import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('bookings')
 @ApiTags('Bookings')
@@ -25,12 +26,16 @@ export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
   @Get()
+  @CacheKey('all-bookings')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: BookingEntity, isArray: true })
   async getAll() {
     return this.bookingsService.getAllBookings();
   }
 
   @Get(':id')
+  @CacheKey('one-booking')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: BookingEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   async get(@Param('id') id: string) {

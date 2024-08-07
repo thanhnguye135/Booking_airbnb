@@ -18,6 +18,7 @@ import { PaymentsService } from './payments.service';
 import { PaymentEntity } from './entities/payment.entity';
 import { CreatePaymentDto } from './dtos/create-payment.dto';
 import { UpdatePaymentDto } from './dtos/update-payment.dto';
+import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('payments')
 @ApiTags('Payments')
@@ -25,12 +26,16 @@ export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
   @Get()
+  @CacheKey('all-payments')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: PaymentEntity, isArray: true })
   async getAll() {
     return this.paymentsService.getAllPayments();
   }
 
   @Get(':id')
+  @CacheKey('one-payment')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: PaymentEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   async get(@Param('id') id: string) {

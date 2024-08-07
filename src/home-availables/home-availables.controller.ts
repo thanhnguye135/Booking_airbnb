@@ -20,6 +20,7 @@ import { HomeAvailableEntity } from './entities/home-available.entity';
 import { CreateHomeAvailableDto } from './dtos/create-home-available.dto';
 import { UpdateHomeAvailableDto } from './dtos/update-home-available.dto';
 import { HomeAvailablesService } from './home-availables.service';
+import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('home-availables')
 @ApiTags('HomeAvailables')
@@ -27,12 +28,16 @@ export class HomeAvailablesController {
   constructor(private readonly homeAvailablesService: HomeAvailablesService) {}
 
   @Get()
+  @CacheKey('all-home-available')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: HomeAvailableEntity, isArray: true })
   async getAll() {
     return this.homeAvailablesService.getAllHomeAvailables();
   }
 
   @Get('home-available')
+  @CacheKey('one-home-available-filter-with-date')
+  @CacheTTL(60 * 1000)
   @ApiQuery({ name: 'startDate', type: Date, example: '2024-08-04T00:00:00Z' })
   @ApiQuery({ name: 'endDate', type: Date, example: '2024-08-05T00:00:00Z' })
   async getHomeAvailables(
@@ -46,6 +51,8 @@ export class HomeAvailablesController {
   }
 
   @Get(':id')
+  @CacheKey('one-home-available')
+  @CacheTTL(60 * 1000)
   @ApiOkResponse({ status: 200, type: HomeAvailableEntity, isArray: false })
   @ApiNotFoundResponse({ description: 'Not Found' })
   async get(@Param('id') id: string) {
