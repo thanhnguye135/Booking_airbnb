@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateHomestayDto } from './dtos/create-homestay.dto';
 import { UpdateHomestayDto } from './dtos/update-homestay.dto';
@@ -12,6 +17,8 @@ export class HomestaysService {
     const homestays = await this.prisma.$queryRaw<
       HomestayRaw[]
     >`SELECT id, name, description, ST_X(coordinates) AS longitude, ST_Y(coordinates) AS latitude, "pricePerNight", "createdAt", "updatedAt" FROM public."Homestay"`;
+    if (!homestays || homestays.length === 0)
+      throw new NotFoundException('No homestays found');
 
     return homestays.map(
       (homestay) =>
@@ -34,6 +41,8 @@ export class HomestaysService {
       FROM public."Homestay"
       WHERE id = ${id}
     `;
+    if (!homestay[0])
+      throw new NotFoundException(`Homestay with ID ${id} not found`);
 
     return new HomestayEntity(homestay[0]);
   }
@@ -41,23 +50,34 @@ export class HomestaysService {
   async createHomestay(createHomestayDto: CreateHomestayDto) {
     const { name, description, longitude, latitude, pricePerNight } =
       createHomestayDto;
-    const result = await this.prisma.$executeRaw`INSERT INTO public."Homestay" (
-        id, 
-        name, 
-        description, 
+    const existingHomestay = await this.prisma.$queryRaw<HomestayRaw[]>`
+      SELECT id, name, description, ST_X(coordinates) AS longitude, ST_Y(coordinates) AS latitude, "pricePerNight", "createdAt", "updatedAt"
+      FROM public."Homestay"
+      WHERE ST_DWithin(coordinates, ST_SetSRID(ST_Point(${longitude}, ${latitude}), 4326), 0.1)
+    `;
+
+    if (existingHomestay[0])
+      throw new ConflictException(
+        'Homestay with the same longitude, latitude already exists',
+      );
+
+    const result = await this.prisma.$queryRaw`INSERT INTO public."Homestay" (
+        id,
+        name,
+        description,
         coordinates,
         "pricePerNight",
         "createdAt",
         "updatedAt"
       ) VALUES (
-        gen_random_uuid(), 
-        ${name}, 
-        ${description}, 
+        gen_random_uuid(),
+        ${name},
+        ${description},
         ST_SetSRID(ST_Point(${longitude}, ${latitude}), 4326),
         ${pricePerNight},
         NOW(),
         NOW()
-      ) RETURNING 
+      ) RETURNING
         id,
         name,
         description,
@@ -67,29 +87,42 @@ export class HomestaysService {
         "createdAt",
         "updatedAt";`;
 
-    return new HomestayEntity(result[0]);
-  }
-
-  async updateHomestay(id: string, updateHomestayDto: UpdateHomestayDto) {
-    return await this.prisma.homestay.update({
-      where: { id },
-      data: updateHomestayDto,
+    return new HomestayEntity({
+      id: result[0].id,
+      name: result[0].name,
+      description: result[0].description,
+      latitude: result[0].latitude,
+      longitude: result[0].longitude,
+      pricePerNight: result[0].pricePerNight,
+      createdAt: result[0].createdAt,
+      updatedAt: result[0].updatedAt,
     });
   }
 
-  async deleteHomestay(id: string) {
-    const homestay = await this.prisma.$queryRaw<HomestayRaw[]>`
-      SELECT id, name, description, ST_X(coordinates) AS longitude, ST_Y(coordinates) AS latitude, "pricePerNight", "createdAt", "updatedAt"
-      FROM public."Homestay"
-      WHERE id = ${id}
-    `;
+  async updateHomestay(id: string, updateHomestayDto: UpdateHomestayDto) {
+    await this.getHomestay(id);
 
-    await this.prisma.$executeRaw`
+    try {
+      return await this.prisma.homestay.update({
+        where: { id },
+        data: updateHomestayDto,
+      });
+    } catch (error) {
+      throw new InternalServerErrorException('An unexpected error occurred');
+    }
+  }
+
+  async deleteHomestay(id: string) {
+    await this.getHomestay(id);
+
+    try {
+      await this.prisma.$executeRaw`
       DELETE FROM public."Homestay"
       WHERE id = ${id}
     `;
-
-    return new HomestayEntity(homestay[0]);
+    } catch (error) {
+      throw new InternalServerErrorException('An unexpected error occurred');
+    }
   }
 
   async findNearByHomestays(
@@ -102,6 +135,10 @@ export class HomestaysService {
       FROM public."Homestay"
       WHERE ST_DWithin(coordinates, ST_SetSRID(ST_Point(${longitude}, ${latitude}), 4326), ${radius})
     `;
+    if (!homestays || homestays.length === 0)
+      throw new NotFoundException(
+        `No homestays found with longitude: ${longitude}, latitude: ${latitude}, and radius: ${radius}`,
+      );
 
     return homestays.map(
       (homestay) =>

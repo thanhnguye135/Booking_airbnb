@@ -1,20 +1,22 @@
+import { IsDate, IsNotEmpty, IsUUID } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID, IsString, IsDate, IsNotEmpty } from 'class-validator';
 
 export class CreateHomeAvailableDto {
   @IsDate()
   @IsNotEmpty()
-  @ApiProperty()
+  @Type(() => Date)
+  @ApiProperty({ type: String, format: 'date-time' })
   availableFrom: Date;
 
   @IsDate()
   @IsNotEmpty()
-  @ApiProperty()
+  @Type(() => Date)
+  @ApiProperty({ type: String, format: 'date-time' })
   availableTo: Date;
 
   @IsNotEmpty()
   @IsUUID()
-  @IsString()
   @ApiProperty()
   homestayId: string;
 }

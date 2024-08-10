@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Body,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -65,6 +67,7 @@ export class UsersController {
   @Delete(':id')
   @ApiOkResponse({ status: 204, description: 'Deleted Successfully' })
   @ApiNotFoundResponse({ description: 'Not Found' })
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     return this.usersService.deleteUser(id);
   }

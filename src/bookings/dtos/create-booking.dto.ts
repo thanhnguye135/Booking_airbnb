@@ -6,16 +6,19 @@ import {
   IsDate,
   IsUUID,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateBookingDto {
   @IsNotEmpty()
   @IsDate()
-  @ApiProperty()
+  @Type(() => Date)
+  @ApiProperty({ type: String, format: 'date-time' })
   checkInDate: Date;
 
   @IsNotEmpty()
   @IsDate()
-  @ApiProperty()
+  @Type(() => Date)
+  @ApiProperty({ type: String, format: 'date-time' })
   checkOutDate: Date;
 
   @IsNotEmpty()

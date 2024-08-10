@@ -25,4 +25,8 @@ export class BookingEntity implements Booking {
 
   @ApiProperty()
   updatedAt: Date;
+
+  constructor(data: Partial<BookingEntity>) {
+    Object.assign(this, data);
+  }
 }
