@@ -61,31 +61,11 @@ export class HomestaysService {
         'Homestay with the same longitude, latitude already exists',
       );
 
-    const result = await this.prisma.$queryRaw`INSERT INTO public."Homestay" (
-        id,
-        name,
-        description,
-        coordinates,
-        "pricePerNight",
-        "createdAt",
-        "updatedAt"
-      ) VALUES (
-        gen_random_uuid(),
-        ${name},
-        ${description},
-        ST_SetSRID(ST_Point(${longitude}, ${latitude}), 4326),
-        ${pricePerNight},
-        NOW(),
-        NOW()
-      ) RETURNING
-        id,
-        name,
-        description,
-        ST_X(coordinates) AS longitude,
-        ST_Y(coordinates) AS latitude,
-        "pricePerNight",
-        "createdAt",
-        "updatedAt";`;
+    const result = await this.prisma.$queryRaw`
+      INSERT INTO public."Homestay" (id, name, description, coordinates, "pricePerNight", "createdAt", "updatedAt")
+      VALUES (gen_random_uuid(), ${name}, ${description}, ST_SetSRID(ST_Point(${longitude}, ${latitude}), 4326), ${pricePerNight}, NOW(), NOW())
+      RETURNING id, name, description, ST_X(coordinates) AS longitude, ST_Y(coordinates) AS latitude, "pricePerNight", "createdAt", "updatedAt";
+      `;
 
     return new HomestayEntity({
       id: result[0].id,

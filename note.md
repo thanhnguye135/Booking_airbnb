@@ -30,3 +30,12 @@
 
     **Implement caching via Redis
     **Implement message queue via RabbitMQ
+
+#Advantages and Disadvantages of raw locks in Postgresql
+
+    +Ensuring data integrity
+    +Preventing multiple transactions try to update the same data simultaneously
+
+    -Deadlocks: many transactions are waiting for each other to release locks
+    -Complexity: managing raw locks and to be aware of lock levels
+    -Performance impact: increase latency due to other transactions to wait

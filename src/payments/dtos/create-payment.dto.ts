@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { PaymentStatus } from '@prisma/client';
 import {
   IsNumber,
   IsString,
@@ -14,9 +15,8 @@ export class CreatePaymentDto {
   amount: number;
 
   @IsNotEmpty()
-  @IsBoolean()
-  @ApiProperty()
-  status: boolean;
+  @ApiProperty({ enum: PaymentStatus })
+  status: PaymentStatus;
 
   @IsNotEmpty()
   @IsString()

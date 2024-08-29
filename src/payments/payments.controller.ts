@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Req,
 } from '@nestjs/common';
 import {
   ApiOkResponse,
@@ -19,6 +20,8 @@ import { PaymentEntity } from './entities/payment.entity';
 import { CreatePaymentDto } from './dtos/create-payment.dto';
 import { UpdatePaymentDto } from './dtos/update-payment.dto';
 import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { Request } from 'express';
+import { ChargePaymentDto } from './dtos/charge-payment.dto';
 
 @Controller('payments')
 @ApiTags('Payments')
@@ -70,5 +73,14 @@ export class PaymentsController {
   @ApiNotFoundResponse({ description: 'Not Found' })
   async remove(@Param('id') id: string) {
     return this.paymentsService.deletePayment(id);
+  }
+
+  @Post('charge')
+  async charge(@Body() chargeDto: ChargePaymentDto, @Req() req: Request) {
+    return this.paymentsService.processPayment(
+      chargeDto.amount,
+      chargeDto.currency,
+      req,
+    );
   }
 }

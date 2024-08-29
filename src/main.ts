@@ -5,9 +5,15 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './exceptions/http-exception.filter';
+import * as cookieParser from 'cookie-parser';
+import { WINSTON_MODULE_NEST_PROVIDER, WinstonModule } from 'nest-winston';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({}),
+  });
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -22,7 +28,8 @@ async function bootstrap() {
       saveUninitialized: false,
       resave: false,
       cookie: {
-        maxAge: 60000,
+        httpOnly: true,
+        secure: false,
       },
     }),
   );

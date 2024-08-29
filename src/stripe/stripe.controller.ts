@@ -1,5 +1,6 @@
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Query, Res } from '@nestjs/common';
 import { StripeService } from './stripe.service';
+import { Response } from 'express';
 
 @Controller('stripe')
 export class StripeController {
@@ -15,13 +16,13 @@ export class StripeController {
     return await this.stripeService.getCustomers();
   }
 
-  @Get()
-  async checkOutSession() {
-    return await this.stripeService.checkOutSession();
+  @Get('success')
+  handleSuccess(@Query('session_id') sessionId: string, @Res() res: Response) {
+    res.json({ msg: 'Payment Successful', sessionId });
   }
 
-  @Get('pay/success/checkout/session')
-  paymentSuccess(@Res({ passthrough: true }) res) {
-    return this.stripeService.successPayment(res);
+  @Get('cancel')
+  handleCancel(@Res() res: Response) {
+    res.json({ msg: 'Payment Canceled' });
   }
 }

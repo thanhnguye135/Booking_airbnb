@@ -52,6 +52,7 @@ model Booking {
   totalPrice Float
   userId String
   homestayId String
+  status BookingStatus @default(PENDING)
 
   user User @relation(fields: [userId], references: [id])
   homestay Homestay @relation(fields: [homestayId], references: [id])
@@ -65,7 +66,7 @@ model Booking {
 model Payment {
   id String @id @default(uuid())
   amount Float
-  status Boolean
+  status PaymentStatus 
   userId String
   bookingId String @unique
 
@@ -100,4 +101,16 @@ model HomeAvailable {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum BookingStatus{
+  PENDING
+  SUCCEED
+  CANCELED
 }

@@ -1,16 +1,26 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePaymentDto } from './dtos/create-payment.dto';
 import { UpdatePaymentDto } from './dtos/update-payment.dto';
+import { StripeService } from 'src/stripe/stripe.service';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Request } from 'express';
 
 @Injectable()
 export class PaymentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(PaymentsService.name);
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly stripeService: StripeService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+  ) {}
 
   async getAllPayments() {
     const payments = await this.prisma.payment.findMany();
@@ -62,6 +72,22 @@ export class PaymentsService {
       await this.prisma.payment.delete({ where: { id } });
     } catch (error) {
       throw new InternalServerErrorException('An unexpected error occurred');
+    }
+  }
+
+  async processPayment(amount: number, currency: string, req: Request) {
+    const session_id = req.cookies['sessionId'];
+    const booking = await this.cacheManager.get(
+      `booking-session-${session_id}`,
+    );
+    if (booking) {
+      this.stripeService.checkOutSession(booking);
+      this.logger.log('The booking has been success');
+    } else {
+      this.logger.log(
+        'The booking has been canceled due to payment expired time',
+        PaymentsService.name,
+      );
     }
   }
 }

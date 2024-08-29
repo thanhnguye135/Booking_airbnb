@@ -1,4 +1,4 @@
-import { Booking } from '@prisma/client';
+import { Booking, BookingStatus } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BookingEntity implements Booking {
@@ -19,6 +19,9 @@ export class BookingEntity implements Booking {
 
   @ApiProperty()
   homestayId: string;
+
+  @ApiProperty({ enum: BookingStatus })
+  status: BookingStatus;
 
   @ApiProperty()
   createdAt: Date;

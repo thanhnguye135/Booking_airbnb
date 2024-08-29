@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Payment } from '@prisma/client';
+import { Payment, PaymentStatus } from '@prisma/client';
 
 export class PaymentEntity implements Payment {
   @ApiProperty()
@@ -8,8 +8,8 @@ export class PaymentEntity implements Payment {
   @ApiProperty()
   amount: number;
 
-  @ApiProperty()
-  status: boolean;
+  @ApiProperty({ enum: PaymentStatus })
+  status: PaymentStatus;
 
   @ApiProperty()
   userId: string;

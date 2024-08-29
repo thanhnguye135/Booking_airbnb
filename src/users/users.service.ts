@@ -13,7 +13,9 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAllUsers() {
-    const users = await this.prisma.user.findMany();
+    const users = await this.prisma.user.findMany({
+      include: { bookings: true, payments: true },
+    });
     if (!users || users.length === 0)
       throw new NotFoundException('No users found');
 
@@ -21,7 +23,10 @@ export class UsersService {
   }
 
   async getUser(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: { bookings: true, payments: true },
+    });
     if (!user) throw new NotFoundException(`User with ID ${id} not found`);
 
     return user;

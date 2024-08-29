@@ -7,6 +7,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { BookingStatus } from '@prisma/client';
 
 export class CreateBookingDto {
   @IsNotEmpty()
@@ -37,4 +38,7 @@ export class CreateBookingDto {
   @IsUUID()
   @ApiProperty()
   homestayId: string;
+
+  @ApiProperty({ enum: BookingStatus })
+  status: BookingStatus;
 }
